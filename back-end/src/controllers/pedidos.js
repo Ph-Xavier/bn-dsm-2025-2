@@ -11,7 +11,7 @@ controller.create = async function (req, res) {
     ("req")
   */
   try {
-    await prisma.cliente.create({ data: req.body });
+    await prisma.pedido.create({ data: req.body });
 
     // Envia um código de sucesso ao front-end
     // HTTP 201: Created
@@ -29,19 +29,17 @@ controller.create = async function (req, res) {
 controller.retrieveAll = async function (req, res) {
   try {
     const include = includeRelations(req.query);
-    // Manda buscar todas as categorias cadastradas no BD
-    const result = await prisma.cliente.findMany({
+    // Manda buscar todas os pedidos cadastradas no BD
+    const result = await prisma.pedido.findMany({
       include,
-      orderBy: [{ nome: "asc" }], // Ordem ASCendente
+      orderBy: [{ num_pedido: "asc" }], // Ordem ASCendente
     });
-
     // Retorna os dados obtidos ao cliente com o status
     // HTTP 200: OK (implícito)
     res.send(result);
   } catch (error) {
     // Algo deu errado: exibe o erro no terminal
     console.error(error);
-
     // Envia o erro ao front-end, com código de erro
     // HTTP 500: Internal Server Error
     res.status(500).send(error);
@@ -54,11 +52,10 @@ controller.retrieveOne = async function (req, res) {
     // Manda recuperar o documento no servidor de BD
     // usando como critério um id informado no parâmetro
     // da requisição
-    const result = await prisma.cliente.findUnique({
+    const result = await prisma.pedido.findUnique({
       include,
       where: { id: req.params.id },
     });
-
     // Encontrou o docuemento ~> retorna HTTP 200: OK (implícito)
     if (result) res.send(result);
     // Não encontrou o documento ~> retorna HTTP 404: Not Found
@@ -66,7 +63,6 @@ controller.retrieveOne = async function (req, res) {
   } catch (error) {
     // Algo deu errado: exibe o erro no terminal
     console.error(error);
-
     // Envia o erro ao front-end, com código de erro
     // HTTP 500: Internal Server Error
     res.status(500).send(error);
@@ -77,7 +73,7 @@ controller.update = async function (req, res) {
   try {
     // Busca o documento passado como parâmetro e, caso o documento seja
     // encontrado, atualiza-o com as informações contidas em req.body
-    await prisma.cliente.update({
+    await prisma.pedido.update({
       where: { id: req.params.id },
       data: req.body,
     });
@@ -105,7 +101,7 @@ controller.delete = async function (req, res) {
   try {
     // Busca o documento pelo id passado como parâmetro
     // e efetua a exclusão, caso o documento seja encontrado
-    await prisma.cliente.delete({
+    await prisma.pedido.delete({
       where: { id: req.params.id },
     });
 
